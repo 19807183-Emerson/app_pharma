@@ -300,3 +300,8 @@ Route::get('/facturas/proveedores/resumen', function () {
  
     echo $html;
 });
+
+Route::get('/clientes/registro', function () {
+    return view('clientes.registro');
+});
+
