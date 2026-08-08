@@ -210,8 +210,6 @@ Route::get('/lotes/inventario', function () {
     echo $html;
 });
  
-
-// Ejercicio 4: Historial General de Facturas de Clientes
 Route::get('/facturas/clientes/historial', function () {
     $facturas = [
         (object)['num_factura' => 'F001', 'cliente' => 'Ana Torres', 'fecha_emision' => '2026-07-01', 'total_pagar' => 45.50, 'estado' => 'Pagada'],
@@ -240,7 +238,6 @@ Route::get('/facturas/clientes/historial', function () {
     echo $html;
 });
  
-// Ejercicio 5: Detalle de Factura de Cliente Específica
 Route::get('/facturas/clientes/detalle/{numero}', function ($numero) {
     $facturas = [
         (object)['num_factura' => 'F001', 'cliente' => 'Ana Torres', 'fecha_emision' => '2026-07-01', 'total_pagar' => 45.50, 'estado' => 'Pagada'],
@@ -273,7 +270,6 @@ Route::get('/facturas/clientes/detalle/{numero}', function ($numero) {
     echo $html;
 });
  
-// Ejercicio 6: Libro de Facturas de Proveedores
 Route::get('/facturas/proveedores/resumen', function () {
     $facturas = [
         (object)['proveedor' => 'PharmaCorp', 'nrc' => '12345-6', 'monto_sin_iva' => 500],
