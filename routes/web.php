@@ -210,3 +210,97 @@ Route::get('/lotes/inventario', function () {
     echo $html;
 });
  
+
+// Ejercicio 4: Historial General de Facturas de Clientes
+Route::get('/facturas/clientes/historial', function () {
+    $facturas = [
+        (object)['num_factura' => 'F001', 'cliente' => 'Ana Torres', 'fecha_emision' => '2026-07-01', 'total_pagar' => 45.50, 'estado' => 'Pagada'],
+        (object)['num_factura' => 'F002', 'cliente' => 'Carlos Pérez', 'fecha_emision' => '2026-07-03', 'total_pagar' => 120.00, 'estado' => 'Pendiente'],
+        (object)['num_factura' => 'F003', 'cliente' => 'Lucía Gómez', 'fecha_emision' => '2026-07-05', 'total_pagar' => 30.25, 'estado' => 'Pagada'],
+    ];
+ 
+    $html = "<h1>Historial General de Facturas</h1>";
+    $html .= "<table border='1' cellpadding='5'>";
+    $html .= "<tr><th>N° Factura</th><th>Cliente</th><th>Fecha de Emisión</th><th>Total a Pagar</th><th>Estado</th></tr>";
+    foreach ($facturas as $factura) {
+        $estadoTexto = strtoupper($factura->estado);
+        if ($factura->estado == 'Pendiente') {
+            $estadoTexto = "⚠ {$estadoTexto} DE COBRO";
+        }
+        $html .= "<tr>";
+        $html .= "<td>{$factura->num_factura}</td>";
+        $html .= "<td>{$factura->cliente}</td>";
+        $html .= "<td>{$factura->fecha_emision}</td>";
+        $html .= "<td>\${$factura->total_pagar}</td>";
+        $html .= "<td>{$estadoTexto}</td>";
+        $html .= "</tr>";
+    }
+    $html .= "</table>";
+ 
+    echo $html;
+});
+ 
+// Ejercicio 5: Detalle de Factura de Cliente Específica
+Route::get('/facturas/clientes/detalle/{numero}', function ($numero) {
+    $facturas = [
+        (object)['num_factura' => 'F001', 'cliente' => 'Ana Torres', 'fecha_emision' => '2026-07-01', 'total_pagar' => 45.50, 'estado' => 'Pagada'],
+        (object)['num_factura' => 'F002', 'cliente' => 'Carlos Pérez', 'fecha_emision' => '2026-07-03', 'total_pagar' => 120.00, 'estado' => 'Pendiente'],
+        (object)['num_factura' => 'F003', 'cliente' => 'Lucía Gómez', 'fecha_emision' => '2026-07-05', 'total_pagar' => 30.25, 'estado' => 'Pagada'],
+    ];
+ 
+    $encontrada = null;
+    foreach ($facturas as $factura) {
+        if ($factura->num_factura == $numero) {
+            $encontrada = $factura;
+            break;
+        }
+    }
+ 
+    if ($encontrada) {
+        $html = "<div>";
+        $html .= "<h2>Ficha de Factura {$encontrada->num_factura}</h2>";
+        $html .= "<ul>";
+        $html .= "<li><strong>Cliente:</strong> {$encontrada->cliente}</li>";
+        $html .= "<li><strong>Fecha de Emisión:</strong> {$encontrada->fecha_emision}</li>";
+        $html .= "<li><strong>Total a Pagar:</strong> \${$encontrada->total_pagar}</li>";
+        $html .= "<li><strong>Estado:</strong> {$encontrada->estado}</li>";
+        $html .= "</ul>";
+        $html .= "</div>";
+    } else {
+        $html = "<h1>Factura No Encontrada</h1>";
+    }
+ 
+    echo $html;
+});
+ 
+// Ejercicio 6: Libro de Facturas de Proveedores
+Route::get('/facturas/proveedores/resumen', function () {
+    $facturas = [
+        (object)['proveedor' => 'PharmaCorp', 'nrc' => '12345-6', 'monto_sin_iva' => 500],
+        (object)['proveedor' => 'MediGlobal', 'nrc' => '98765-4', 'monto_sin_iva' => 800],
+        (object)['proveedor' => 'BioSalud', 'nrc' => '55555-1', 'monto_sin_iva' => 300],
+    ];
+ 
+    $totalGeneral = 0;
+ 
+    $html = "<h1>Resumen de Facturas de Proveedores</h1>";
+    $html .= "<table border='1' cellpadding='5'>";
+    $html .= "<tr><th>Proveedor</th><th>NRC</th><th>Monto sin IVA</th><th>IVA (13%)</th><th>Monto Total</th></tr>";
+    foreach ($facturas as $factura) {
+        $iva = $factura->monto_sin_iva * 0.13;
+        $montoTotal = $factura->monto_sin_iva + $iva;
+        $totalGeneral += $montoTotal;
+ 
+        $html .= "<tr>";
+        $html .= "<td>{$factura->proveedor}</td>";
+        $html .= "<td>{$factura->nrc}</td>";
+        $html .= "<td>\${$factura->monto_sin_iva}</td>";
+        $html .= "<td>\$" . number_format($iva, 2) . "</td>";
+        $html .= "<td>\$" . number_format($montoTotal, 2) . "</td>";
+        $html .= "</tr>";
+    }
+    $html .= "<tfoot><tr><td colspan='4'><strong>Total Acumulado</strong></td><td><strong>\$" . number_format($totalGeneral, 2) . "</strong></td></tr></tfoot>";
+    $html .= "</table>";
+ 
+    echo $html;
+});
